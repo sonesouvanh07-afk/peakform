@@ -7,9 +7,9 @@ export default function Home() {
       <p className="text-xl md:text-2xl text-slate-300 mb-8 text-center max-w-2xl">
         Achieve your dream physique with a personalized workout and meal plan built for your goals.
       </p>
-      <button className="bg-white text-slate-900 px-8 py-4 rounded-full font-semibold text-lg hover:bg-slate-200 transition">
-        Get Started
-      </button>
+      <a href="/get-started" className="bg-white text-slate-900 px-8 py-4 rounded-full font-semibold text-lg hover:bg-slate-200 transition">
+  Get Started
+</a>
     </main>
   );
 }
