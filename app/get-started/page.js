@@ -2,6 +2,44 @@
 
 import { useState } from "react";
 
+// ---- Calculation functions ----
+
+// Calculate BMR using Mifflin-St Jeor equation
+function calculateBMR(sex, weight, height, age) {
+    const base = (10 * weight) + (6.25 * height) - (5 * age);
+    return sex === "male" ? base + 5 : base - 161;
+  }
+  
+  // Calculate TDEE by multiplying BMR by activity multiplier
+  function calculateTDEE(bmr, activity) {
+    const multipliers = {
+      sedentary: 1.2,
+      light: 1.375,
+      moderate: 1.55,
+      very: 1.725,
+      extra: 1.9,
+    };
+    return bmr * multipliers[activity];
+  }
+  
+  // Calculate daily calorie target based on goal
+  function calculateCalorieTarget(tdee, goal) {
+    if (goal === "lose") return tdee - 500;
+    if (goal === "muscle") return tdee + 250;
+    return tdee; // maintain
+  }
+  
+  // Calculate macros (protein, fat, carbs in grams)
+  function calculateMacros(weight, calorieTarget) {
+    const weightInLbs = weight * 2.2;
+    const protein = Math.round(weightInLbs * 1); // 1g per lb
+    const fat = Math.round((calorieTarget * 0.25) / 9); // 25% of calories from fat
+    const proteinCalories = protein * 4;
+    const fatCalories = fat * 9;
+    const carbCalories = calorieTarget - proteinCalories - fatCalories;
+    const carbs = Math.round(carbCalories / 4);
+    return { protein, fat, carbs };
+  }
 export default function GetStartedPage() {
   const [formData, setFormData] = useState({
     sex: "male",
@@ -11,6 +49,7 @@ export default function GetStartedPage() {
     activity: "moderate",
     goal: "muscle",
   });
+  const [results, setResults] = useState(null);
 
   function handleChange(e) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,8 +57,26 @@ export default function GetStartedPage() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    alert("Form submitted! Check the browser console for your data.");
+  
+    const weight = Number(formData.weight);
+    const height = Number(formData.height);
+    const age = Number(formData.age);
+  
+    const bmr = calculateBMR(formData.sex, weight, height, age);
+    const tdee = calculateTDEE(bmr, formData.activity);
+    const calorieTarget = calculateCalorieTarget(tdee, formData.goal);
+    const macros = calculateMacros(weight, calorieTarget);
+  
+    setResults({
+      bmr: Math.round(bmr),
+      tdee: Math.round(tdee),
+      calorieTarget: Math.round(calorieTarget),
+      protein: macros.protein,
+      fat: macros.fat,
+      carbs: macros.carbs,
+    });
+  
+    alert(`BMR: ${Math.round(bmr)} | TDEE: ${Math.round(tdee)} | Calories: ${Math.round(calorieTarget)} | Protein: ${macros.protein}g | Fat: ${macros.fat}g | Carbs: ${macros.carbs}g`);
   }
 
   return (
