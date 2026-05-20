@@ -75,13 +75,13 @@ export default function GetStartedPage() {
       fat: macros.fat,
       carbs: macros.carbs,
     });
-  
-    alert(`BMR: ${Math.round(bmr)} | TDEE: ${Math.round(tdee)} | Calories: ${Math.round(calorieTarget)} | Protein: ${macros.protein}g | Fat: ${macros.fat}g | Carbs: ${macros.carbs}g`);
   }
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-700 text-white px-6 py-12">
       <div className="max-w-xl mx-auto">
+        {results === null ? (
+        <>
         <h1 className="text-4xl md:text-5xl font-bold mb-2 text-center">
           Tell us about yourself
         </h1>
@@ -185,6 +185,59 @@ export default function GetStartedPage() {
             Calculate My Plan
           </button>
         </form>
+        </>
+        ) : (
+        <div className="space-y-8">
+          <div className="text-center space-y-2">
+            <h1 className="text-4xl md:text-5xl font-bold">
+              Your personalized plan
+            </h1>
+            <p className="text-slate-300">
+              Hit these numbers daily to reach your goal.
+            </p>
+          </div>
+
+          <div className="bg-slate-800 rounded-lg p-8 text-center">
+            <p className="text-slate-400 text-sm uppercase tracking-wide mb-2">
+              Calories per day
+            </p>
+            <p className="text-7xl font-bold">{results.calorieTarget}</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-slate-800 rounded-lg p-6 text-center">
+              <p className="text-slate-400 text-sm uppercase tracking-wide mb-2">
+                Protein
+              </p>
+              <p className="text-3xl font-bold">{results.protein}g</p>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-6 text-center">
+              <p className="text-slate-400 text-sm uppercase tracking-wide mb-2">
+                Fat
+              </p>
+              <p className="text-3xl font-bold">{results.fat}g</p>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-6 text-center">
+              <p className="text-slate-400 text-sm uppercase tracking-wide mb-2">
+                Carbs
+              </p>
+              <p className="text-3xl font-bold">{results.carbs}g</p>
+            </div>
+          </div>
+
+          <div className="text-slate-400 text-sm text-center">
+            BMR: {results.bmr} · TDEE: {results.tdee}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setResults(null)}
+            className="w-full bg-white text-slate-900 px-8 py-4 rounded-full font-semibold text-lg hover:bg-slate-200 transition"
+          >
+            Start over
+          </button>
+        </div>
+        )}
       </div>
     </main>
   );
