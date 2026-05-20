@@ -2,6 +2,257 @@
 
 import { useState } from "react";
 
+// ---- Workout templates ----
+
+const workoutTemplates = {
+  fullBodyBeginner: {
+    name: "Full Body — Beginner",
+    daysPerWeek: 3,
+    description:
+      "Three full-body sessions a week built around the basic compound lifts. Designed for new lifters who need to learn movement patterns and build a foundation before splitting up training.",
+    days: [
+      {
+        name: "Day 1 – Full Body A",
+        focus: "Quads, chest, back",
+        exercises: [
+          { name: "Back Squat", sets: 3, reps: "8-10" },
+          { name: "Bench Press", sets: 3, reps: "8-10" },
+          { name: "Barbell Row", sets: 3, reps: "8-10" },
+          { name: "Overhead Press", sets: 3, reps: "10-12" },
+          { name: "Plank", sets: 3, reps: "AMRAP" },
+        ],
+      },
+      {
+        name: "Day 2 – Full Body B",
+        focus: "Posterior chain, push, pull",
+        exercises: [
+          { name: "Deadlift", sets: 3, reps: "6-8" },
+          { name: "Incline Dumbbell Press", sets: 3, reps: "8-10" },
+          { name: "Lat Pulldown", sets: 3, reps: "10-12" },
+          { name: "Goblet Squat", sets: 3, reps: "10-12" },
+          { name: "Tricep Pushdown", sets: 3, reps: "12-15" },
+          { name: "Hanging Knee Raise", sets: 3, reps: "AMRAP" },
+        ],
+      },
+      {
+        name: "Day 3 – Full Body C",
+        focus: "Legs, chest, arms",
+        exercises: [
+          { name: "Leg Press", sets: 3, reps: "10-12" },
+          { name: "Dumbbell Bench Press", sets: 3, reps: "10-12" },
+          { name: "Seated Cable Row", sets: 3, reps: "10-12" },
+          { name: "Dumbbell Shoulder Press", sets: 3, reps: "10-12" },
+          { name: "Bicep Curl", sets: 3, reps: "12-15" },
+          { name: "Tricep Extension", sets: 3, reps: "12-15" },
+        ],
+      },
+    ],
+  },
+
+  upperLowerSplit: {
+    name: "Upper/Lower Split",
+    daysPerWeek: 4,
+    description:
+      "Four sessions a week alternating upper and lower body. A balanced step up from full-body training for intermediate lifters who can recover from more volume per muscle group.",
+    days: [
+      {
+        name: "Day 1 – Upper (Strength)",
+        focus: "Chest, back, shoulders",
+        exercises: [
+          { name: "Bench Press", sets: 4, reps: "6-8" },
+          { name: "Barbell Row", sets: 4, reps: "6-8" },
+          { name: "Overhead Press", sets: 3, reps: "8-10" },
+          { name: "Pull-Up", sets: 3, reps: "AMRAP" },
+          { name: "Incline Dumbbell Press", sets: 3, reps: "8-10" },
+          { name: "Face Pull", sets: 3, reps: "12-15" },
+        ],
+      },
+      {
+        name: "Day 2 – Lower (Strength)",
+        focus: "Quads, hamstrings, glutes",
+        exercises: [
+          { name: "Back Squat", sets: 4, reps: "6-8" },
+          { name: "Romanian Deadlift", sets: 4, reps: "8-10" },
+          { name: "Leg Press", sets: 3, reps: "10-12" },
+          { name: "Walking Lunge", sets: 3, reps: "10-12" },
+          { name: "Standing Calf Raise", sets: 4, reps: "12-15" },
+          { name: "Hanging Leg Raise", sets: 3, reps: "AMRAP" },
+        ],
+      },
+      {
+        name: "Day 3 – Upper (Hypertrophy)",
+        focus: "Chest, back, arms",
+        exercises: [
+          { name: "Incline Dumbbell Press", sets: 4, reps: "8-10" },
+          { name: "Lat Pulldown", sets: 4, reps: "10-12" },
+          { name: "Seated Dumbbell Press", sets: 3, reps: "10-12" },
+          { name: "Cable Row", sets: 3, reps: "10-12" },
+          { name: "Lateral Raise", sets: 3, reps: "12-15" },
+          { name: "Bicep Curl", sets: 3, reps: "10-12" },
+          { name: "Tricep Pushdown", sets: 3, reps: "12-15" },
+        ],
+      },
+      {
+        name: "Day 4 – Lower (Hypertrophy)",
+        focus: "Glutes, hamstrings, quads",
+        exercises: [
+          { name: "Front Squat", sets: 4, reps: "8-10" },
+          { name: "Hip Thrust", sets: 4, reps: "8-10" },
+          { name: "Bulgarian Split Squat", sets: 3, reps: "10-12" },
+          { name: "Leg Curl", sets: 3, reps: "10-12" },
+          { name: "Leg Extension", sets: 3, reps: "12-15" },
+          { name: "Seated Calf Raise", sets: 4, reps: "12-15" },
+        ],
+      },
+    ],
+  },
+
+  pushPullLegs: {
+    name: "Push / Pull / Legs",
+    daysPerWeek: 6,
+    description:
+      "Six sessions a week split into push (chest/shoulders/triceps), pull (back/biceps), and legs, repeated twice. High-volume programming for advanced lifters who can recover from training six days a week.",
+    days: [
+      {
+        name: "Day 1 – Push (Strength)",
+        focus: "Chest, shoulders, triceps",
+        exercises: [
+          { name: "Bench Press", sets: 4, reps: "6-8" },
+          { name: "Overhead Press", sets: 4, reps: "8-10" },
+          { name: "Incline Dumbbell Press", sets: 3, reps: "8-10" },
+          { name: "Lateral Raise", sets: 3, reps: "12-15" },
+          { name: "Tricep Pushdown", sets: 3, reps: "10-12" },
+          { name: "Overhead Tricep Extension", sets: 3, reps: "10-12" },
+        ],
+      },
+      {
+        name: "Day 2 – Pull (Strength)",
+        focus: "Back, biceps",
+        exercises: [
+          { name: "Deadlift", sets: 4, reps: "5" },
+          { name: "Pull-Up", sets: 4, reps: "AMRAP" },
+          { name: "Barbell Row", sets: 3, reps: "8-10" },
+          { name: "Lat Pulldown", sets: 3, reps: "10-12" },
+          { name: "Face Pull", sets: 3, reps: "12-15" },
+          { name: "Barbell Curl", sets: 3, reps: "8-10" },
+        ],
+      },
+      {
+        name: "Day 3 – Legs (Strength)",
+        focus: "Quads, hamstrings, glutes, calves",
+        exercises: [
+          { name: "Back Squat", sets: 4, reps: "6-8" },
+          { name: "Romanian Deadlift", sets: 4, reps: "8-10" },
+          { name: "Leg Press", sets: 3, reps: "10-12" },
+          { name: "Leg Curl", sets: 3, reps: "10-12" },
+          { name: "Standing Calf Raise", sets: 4, reps: "12-15" },
+          { name: "Hanging Leg Raise", sets: 3, reps: "AMRAP" },
+        ],
+      },
+      {
+        name: "Day 4 – Push (Hypertrophy)",
+        focus: "Chest, shoulders, triceps",
+        exercises: [
+          { name: "Incline Bench Press", sets: 4, reps: "8-10" },
+          { name: "Seated Dumbbell Press", sets: 4, reps: "8-10" },
+          { name: "Dumbbell Fly", sets: 3, reps: "10-12" },
+          { name: "Lateral Raise", sets: 3, reps: "12-15" },
+          { name: "Close-Grip Bench Press", sets: 3, reps: "8-10" },
+          { name: "Cable Tricep Kickback", sets: 3, reps: "12-15" },
+        ],
+      },
+      {
+        name: "Day 5 – Pull (Hypertrophy)",
+        focus: "Back, biceps",
+        exercises: [
+          { name: "Bent-Over Row", sets: 4, reps: "8-10" },
+          { name: "Chin-Up", sets: 4, reps: "AMRAP" },
+          { name: "Seated Cable Row", sets: 3, reps: "10-12" },
+          { name: "Straight-Arm Pulldown", sets: 3, reps: "12-15" },
+          { name: "Preacher Curl", sets: 3, reps: "10-12" },
+          { name: "Hammer Curl", sets: 3, reps: "12-15" },
+        ],
+      },
+      {
+        name: "Day 6 – Legs (Hypertrophy)",
+        focus: "Glutes, hamstrings, quads, core",
+        exercises: [
+          { name: "Front Squat", sets: 4, reps: "8-10" },
+          { name: "Hip Thrust", sets: 4, reps: "10-12" },
+          { name: "Bulgarian Split Squat", sets: 3, reps: "10-12" },
+          { name: "Leg Extension", sets: 3, reps: "12-15" },
+          { name: "Seated Calf Raise", sets: 4, reps: "12-15" },
+          { name: "Plank", sets: 3, reps: "AMRAP" },
+        ],
+      },
+    ],
+  },
+
+  fatLossCircuit: {
+    name: "Fat Loss Circuit",
+    daysPerWeek: 4,
+    description:
+      "Four full-body circuit sessions a week with short rest between exercises and a cardio finisher to keep heart rate high. Built to preserve muscle and burn calories while in a caloric deficit.",
+    days: [
+      {
+        name: "Day 1 – Full Body Circuit A",
+        focus: "Total body + conditioning",
+        exercises: [
+          { name: "Goblet Squat", sets: 4, reps: "12-15" },
+          { name: "Push-Up", sets: 4, reps: "AMRAP" },
+          { name: "Dumbbell Row", sets: 4, reps: "10-12" },
+          { name: "Dumbbell Romanian Deadlift", sets: 4, reps: "10-12" },
+          { name: "Plank", sets: 4, reps: "AMRAP" },
+          { name: "Rowing Machine Finisher (5 min)", sets: 1, reps: "AMRAP" },
+        ],
+      },
+      {
+        name: "Day 2 – Full Body Circuit B",
+        focus: "Total body + conditioning",
+        exercises: [
+          { name: "Kettlebell Swing", sets: 4, reps: "12-15" },
+          { name: "Dumbbell Bench Press", sets: 4, reps: "10-12" },
+          { name: "Lat Pulldown", sets: 4, reps: "10-12" },
+          { name: "Walking Lunge", sets: 4, reps: "10-12" },
+          { name: "Mountain Climbers", sets: 4, reps: "AMRAP" },
+          { name: "Incline Treadmill Walk (10 min)", sets: 1, reps: "AMRAP" },
+        ],
+      },
+      {
+        name: "Day 3 – Full Body Circuit C",
+        focus: "Total body + conditioning",
+        exercises: [
+          { name: "Trap Bar Deadlift", sets: 4, reps: "8-10" },
+          { name: "Dumbbell Shoulder Press", sets: 4, reps: "10-12" },
+          { name: "Inverted Row", sets: 4, reps: "10-12" },
+          { name: "Step-Up", sets: 4, reps: "10-12" },
+          { name: "Russian Twist", sets: 4, reps: "12-15" },
+          { name: "Battle Ropes Finisher (5 rounds)", sets: 1, reps: "AMRAP" },
+        ],
+      },
+      {
+        name: "Day 4 – Full Body Circuit D",
+        focus: "Total body + conditioning",
+        exercises: [
+          { name: "Front Squat", sets: 4, reps: "10-12" },
+          { name: "Incline Dumbbell Press", sets: 4, reps: "10-12" },
+          { name: "Cable Row", sets: 4, reps: "10-12" },
+          { name: "Hip Thrust", sets: 4, reps: "10-12" },
+          { name: "Burpees", sets: 4, reps: "AMRAP" },
+          { name: "Stationary Bike Finisher (10 min)", sets: 1, reps: "AMRAP" },
+        ],
+      },
+    ],
+  },
+};
+
+function pickWorkoutPlan(goal, activity) {
+  if (goal === "lose") return workoutTemplates.fatLossCircuit;
+  if (activity === "sedentary" || activity === "light") return workoutTemplates.fullBodyBeginner;
+  if (activity === "moderate") return workoutTemplates.upperLowerSplit;
+  return workoutTemplates.pushPullLegs;
+}
+
 // ---- Calculation functions ----
 
 // Calculate BMR using Mifflin-St Jeor equation
@@ -66,7 +317,8 @@ export default function GetStartedPage() {
     const tdee = calculateTDEE(bmr, formData.activity);
     const calorieTarget = calculateCalorieTarget(tdee, formData.goal);
     const macros = calculateMacros(weight, calorieTarget);
-  
+    const workoutPlan = pickWorkoutPlan(formData.goal, formData.activity);
+
     setResults({
       bmr: Math.round(bmr),
       tdee: Math.round(tdee),
@@ -74,6 +326,7 @@ export default function GetStartedPage() {
       protein: macros.protein,
       fat: macros.fat,
       carbs: macros.carbs,
+      workoutPlan,
     });
   }
 
@@ -227,6 +480,41 @@ export default function GetStartedPage() {
 
           <div className="text-slate-400 text-sm text-center">
             BMR: {results.bmr} · TDEE: {results.tdee}
+          </div>
+
+          <div className="space-y-4">
+            <h2 className="text-3xl font-bold">Your Workout Plan</h2>
+
+            <div className="bg-slate-800 rounded-lg p-6 space-y-2">
+              <p className="text-2xl font-bold">{results.workoutPlan.name}</p>
+              <p className="text-slate-400 text-sm">
+                {results.workoutPlan.daysPerWeek} days per week
+              </p>
+              <p className="text-slate-300">
+                {results.workoutPlan.description}
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              {results.workoutPlan.days.map((day, dayIndex) => (
+                <div
+                  key={dayIndex}
+                  className="bg-slate-800 rounded-lg p-6 space-y-3"
+                >
+                  <div>
+                    <h3 className="text-xl font-bold">{day.name}</h3>
+                    <p className="text-slate-400 text-sm">{day.focus}</p>
+                  </div>
+                  <ul className="space-y-1 text-slate-200">
+                    {day.exercises.map((exercise, exIndex) => (
+                      <li key={exIndex}>
+                        {exercise.name} — {exercise.sets} sets × {exercise.reps} reps
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
 
           <button
