@@ -2,6 +2,134 @@
 
 import { useState } from "react";
 
+// ---- Meal database ----
+
+const meals = [
+  // Breakfasts (10)
+  { name: "Oatmeal with banana and peanut butter", type: "breakfast", calories: 450, protein: 14, fat: 16, carbs: 62 },
+  { name: "Three-egg omelette with spinach and cheese", type: "breakfast", calories: 390, protein: 27, fat: 29, carbs: 5 },
+  { name: "Greek yogurt parfait with granola and berries", type: "breakfast", calories: 410, protein: 25, fat: 11, carbs: 52 },
+  { name: "Whey protein smoothie with oats and banana", type: "breakfast", calories: 520, protein: 40, fat: 9, carbs: 70 },
+  { name: "Avocado toast with two poached eggs", type: "breakfast", calories: 470, protein: 19, fat: 27, carbs: 38 },
+  { name: "Khao Tom (Thai pork rice soup)", type: "breakfast", calories: 375, protein: 23, fat: 9, carbs: 50 },
+  { name: "Scrambled eggs with whole-wheat toast", type: "breakfast", calories: 405, protein: 26, fat: 20, carbs: 30 },
+  { name: "Pho Bo (Vietnamese beef noodle soup)", type: "breakfast", calories: 455, protein: 31, fat: 10, carbs: 60 },
+  { name: "Banana protein pancakes", type: "breakfast", calories: 515, protein: 34, fat: 13, carbs: 66 },
+  { name: "Nasi Lemak (coconut rice, egg, peanuts, sambal)", type: "breakfast", calories: 615, protein: 16, fat: 29, carbs: 73 },
+
+  // Lunches (12)
+  { name: "Grilled chicken and rice bowl with vegetables", type: "lunch", calories: 595, protein: 45, fat: 14, carbs: 72 },
+  { name: "Turkey and avocado sandwich on whole grain", type: "lunch", calories: 515, protein: 32, fat: 20, carbs: 52 },
+  { name: "Larb Gai (Thai minced chicken salad) with sticky rice", type: "lunch", calories: 525, protein: 38, fat: 14, carbs: 62 },
+  { name: "Quinoa salad with chickpeas and feta", type: "lunch", calories: 475, protein: 18, fat: 19, carbs: 58 },
+  { name: "Bun Cha (Vietnamese grilled pork with noodles)", type: "lunch", calories: 620, protein: 36, fat: 22, carbs: 70 },
+  { name: "Tuna poke bowl with brown rice", type: "lunch", calories: 550, protein: 40, fat: 13, carbs: 68 },
+  { name: "Khao Pad (Thai chicken fried rice)", type: "lunch", calories: 610, protein: 30, fat: 20, carbs: 78 },
+  { name: "Caesar salad with grilled chicken", type: "lunch", calories: 490, protein: 42, fat: 26, carbs: 22 },
+  { name: "Nasi Goreng (Indonesian fried rice with chicken and egg)", type: "lunch", calories: 655, protein: 32, fat: 22, carbs: 82 },
+  { name: "Beef and broccoli stir-fry with jasmine rice", type: "lunch", calories: 635, protein: 42, fat: 18, carbs: 76 },
+  { name: "Som Tam (green papaya salad) with grilled chicken", type: "lunch", calories: 430, protein: 34, fat: 14, carbs: 42 },
+  { name: "Lentil soup with a whole-grain roll", type: "lunch", calories: 425, protein: 22, fat: 9, carbs: 64 },
+
+  // Dinners (12)
+  { name: "Baked salmon with sweet potato and asparagus", type: "dinner", calories: 545, protein: 40, fat: 24, carbs: 42 },
+  { name: "Grilled steak with mashed potatoes and green beans", type: "dinner", calories: 630, protein: 46, fat: 28, carbs: 48 },
+  { name: "Pad Krapow Gai (Thai basil chicken) with rice", type: "dinner", calories: 645, protein: 38, fat: 22, carbs: 74 },
+  { name: "Khao Soi (Northern Thai curry noodle soup) with chicken", type: "dinner", calories: 690, protein: 33, fat: 30, carbs: 72 },
+  { name: "Chicken breast with quinoa and roasted vegetables", type: "dinner", calories: 585, protein: 48, fat: 16, carbs: 62 },
+  { name: "Tom Yum Goong (Thai shrimp soup) with rice", type: "dinner", calories: 515, protein: 36, fat: 10, carbs: 70 },
+  { name: "Spaghetti with turkey meatballs and marinara", type: "dinner", calories: 625, protein: 38, fat: 18, carbs: 78 },
+  { name: "Sticky rice with Thai grilled chicken (Gai Yang)", type: "dinner", calories: 640, protein: 44, fat: 16, carbs: 80 },
+  { name: "Beef pho with extra brisket", type: "dinner", calories: 525, protein: 38, fat: 12, carbs: 66 },
+  { name: "Baked cod with rice and stir-fried bok choy", type: "dinner", calories: 525, protein: 42, fat: 11, carbs: 64 },
+  { name: "Pork stir-fry with jasmine rice", type: "dinner", calories: 655, protein: 40, fat: 22, carbs: 74 },
+  { name: "Tofu and vegetable green curry with rice", type: "dinner", calories: 595, protein: 22, fat: 26, carbs: 68 },
+
+  // Snacks (6)
+  { name: "Apple with peanut butter", type: "snack", calories: 295, protein: 8, fat: 16, carbs: 30 },
+  { name: "Protein bar", type: "snack", calories: 250, protein: 20, fat: 8, carbs: 24 },
+  { name: "Greek yogurt with honey", type: "snack", calories: 220, protein: 18, fat: 4, carbs: 28 },
+  { name: "Cottage cheese with pineapple", type: "snack", calories: 230, protein: 24, fat: 5, carbs: 22 },
+  { name: "Handful of mixed nuts and dried fruit", type: "snack", calories: 340, protein: 9, fat: 22, carbs: 26 },
+  { name: "Protein shake with a banana", type: "snack", calories: 315, protein: 27, fat: 6, carbs: 38 },
+
+  // Bulker-friendly high-calorie meals (10) — for users with large calorie targets
+  { name: "Mass-gainer oatmeal bowl (oats, banana, peanut butter, protein powder, milk)", type: "breakfast", calories: 880, protein: 52, fat: 26, carbs: 110 },
+  { name: "Triple-egg omelette with avocado toast and sausage", type: "breakfast", calories: 800, protein: 38, fat: 57, carbs: 34 },
+  { name: "Bun Cha (Vietnamese grilled pork with rice noodles) — large bowl", type: "lunch", calories: 850, protein: 48, fat: 32, carbs: 92 },
+  { name: "Khao Mun Gai (Thai chicken and rice) — large bowl with extra chicken", type: "lunch", calories: 1000, protein: 62, fat: 30, carbs: 118 },
+  { name: "Double chicken burrito bowl (rice, beans, cheese, guacamole)", type: "lunch", calories: 1050, protein: 60, fat: 34, carbs: 120 },
+  { name: "Beef pho — large bowl with extra meat", type: "dinner", calories: 950, protein: 60, fat: 26, carbs: 118 },
+  { name: "Salmon teriyaki bowl with double rice and edamame", type: "dinner", calories: 1000, protein: 52, fat: 30, carbs: 130 },
+  { name: "Bulk plate: chicken, sweet potato, rice, and avocado", type: "dinner", calories: 1020, protein: 65, fat: 30, carbs: 122 },
+  { name: "Peanut butter banana protein shake (oats, milk, honey, PB, protein powder)", type: "snack", calories: 600, protein: 38, fat: 18, carbs: 70 },
+  { name: "Trail mix bowl with Greek yogurt and honey", type: "snack", calories: 560, protein: 26, fat: 26, carbs: 56 },
+];
+
+function scoreMeal(meal, targetCalories, targetProtein, targetFat, targetCarbs) {
+  return (
+    Math.abs(meal.calories - targetCalories) +
+    Math.abs(meal.protein - targetProtein) * 4 +
+    Math.abs(meal.fat - targetFat) * 9 +
+    Math.abs(meal.carbs - targetCarbs) * 4
+  );
+}
+
+function pickMealPlan(calorieTarget, proteinTarget, fatTarget, carbsTarget) {
+  // Allocate % of daily intake per meal type
+  const allocation = {
+    breakfast: 0.25,
+    lunch: 0.3,
+    dinner: 0.3,
+    snack: 0.15,
+  };
+
+  const mealTypes = ["breakfast", "lunch", "dinner", "snack"];
+  const picks = {};
+  let remainingCals = calorieTarget;
+  let remainingProtein = proteinTarget;
+  let remainingFat = fatTarget;
+  let remainingCarbs = carbsTarget;
+
+  for (const type of mealTypes) {
+    const targetCals = calorieTarget * allocation[type];
+    const targetProt = proteinTarget * allocation[type];
+    const targetFat = fatTarget * allocation[type];
+    const targetCarbs = carbsTarget * allocation[type];
+
+    const candidates = meals.filter((m) => m.type === type);
+    if (candidates.length === 0) continue;
+
+    // Score every candidate, pick lowest
+    let bestMeal = candidates[0];
+    let bestScore = scoreMeal(bestMeal, targetCals, targetProt, targetFat, targetCarbs);
+
+    for (const meal of candidates) {
+      const score = scoreMeal(meal, targetCals, targetProt, targetFat, targetCarbs);
+      if (score < bestScore) {
+        bestScore = score;
+        bestMeal = meal;
+      }
+    }
+
+    picks[type] = bestMeal;
+    remainingCals -= bestMeal.calories;
+    remainingProtein -= bestMeal.protein;
+    remainingFat -= bestMeal.fat;
+    remainingCarbs -= bestMeal.carbs;
+  }
+
+  // Calculate totals
+  const totals = {
+    calories: picks.breakfast.calories + picks.lunch.calories + picks.dinner.calories + picks.snack.calories,
+    protein: picks.breakfast.protein + picks.lunch.protein + picks.dinner.protein + picks.snack.protein,
+    fat: picks.breakfast.fat + picks.lunch.fat + picks.dinner.fat + picks.snack.fat,
+    carbs: picks.breakfast.carbs + picks.lunch.carbs + picks.dinner.carbs + picks.snack.carbs,
+  };
+
+  return { picks, totals };
+}
+
 // ---- Workout templates ----
 
 const workoutTemplates = {
@@ -318,6 +446,12 @@ export default function GetStartedPage() {
     const calorieTarget = calculateCalorieTarget(tdee, formData.goal);
     const macros = calculateMacros(weight, calorieTarget);
     const workoutPlan = pickWorkoutPlan(formData.goal, formData.activity);
+    const mealPlan = pickMealPlan(
+      Math.round(calorieTarget),
+      macros.protein,
+      macros.fat,
+      macros.carbs
+    );
 
     setResults({
       bmr: Math.round(bmr),
@@ -327,8 +461,17 @@ export default function GetStartedPage() {
       fat: macros.fat,
       carbs: macros.carbs,
       workoutPlan,
+      mealPlan,
     });
   }
+
+  // How close the meal plan's calories land to the user's target (used below).
+  // results is null before the form is submitted, so guard against that.
+  const matchPercent = results
+    ? Math.round(
+        (results.mealPlan.totals.calories / results.calorieTarget) * 100
+      )
+    : 0;
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-700 text-white px-6 py-12">
@@ -514,6 +657,68 @@ export default function GetStartedPage() {
                   </ul>
                 </div>
               ))}
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-3xl font-bold">
+                Sample Day to Hit Your Macros
+              </h2>
+              <p className="text-slate-400 text-sm mt-1">
+                These are sample meals to get you started. Adjust portions to
+                your preferences.
+              </p>
+            </div>
+
+            {["breakfast", "lunch", "dinner", "snack"].map((mealType) => {
+              const meal = results.mealPlan.picks[mealType];
+              return (
+                <div
+                  key={mealType}
+                  className="bg-slate-800 rounded-lg p-6"
+                >
+                  <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">
+                    {mealType}
+                  </p>
+                  <p className="text-xl font-bold">{meal.name}</p>
+                  <p className="text-slate-300 text-sm mt-2">
+                    {meal.calories} cal · {meal.protein}P · {meal.fat}F ·{" "}
+                    {meal.carbs}C
+                  </p>
+                </div>
+              );
+            })}
+
+            <div className="bg-slate-700 rounded-lg p-6">
+              <p className="text-slate-300 text-xs uppercase tracking-wide mb-1">
+                Daily Total
+              </p>
+              <p className="text-xl font-bold">
+                {results.mealPlan.totals.calories.toLocaleString()} /{" "}
+                {results.calorieTarget.toLocaleString()} cal · {matchPercent}%
+                match
+              </p>
+              <p className="text-slate-300 text-sm mt-2">
+                Protein: {results.mealPlan.totals.protein}g · Fat:{" "}
+                {results.mealPlan.totals.fat}g · Carbs:{" "}
+                {results.mealPlan.totals.carbs}g
+              </p>
+              <p
+                className={
+                  matchPercent >= 95
+                    ? "text-emerald-400 text-sm mt-3"
+                    : matchPercent >= 85
+                    ? "text-amber-400 text-sm mt-3"
+                    : "text-orange-400 text-sm mt-3"
+                }
+              >
+                {matchPercent >= 95
+                  ? "Great match — these meals get you within 5% of your target."
+                  : matchPercent >= 85
+                  ? "Close match — adjust portions slightly to hit your exact target."
+                  : "Your calorie need is high. Consider adding extra snacks or larger portions to reach your full target."}
+              </p>
             </div>
           </div>
 
